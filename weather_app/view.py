@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from sqlalchemy.sql import text
-from weather_app.models import *
+from .models import *
 from flask import Blueprint
 
 api = Blueprint('api', __name__, url_prefix='/api')
@@ -8,7 +8,7 @@ api = Blueprint('api', __name__, url_prefix='/api')
 
 def ingestion():
     path = './data/wx_data'
-    from weather_app.utils import insert_data, calculate_stats
+    from .utils import insert_data, calculate_stats
     if insert_data(path, db):
         calculate_stats(db)
 
