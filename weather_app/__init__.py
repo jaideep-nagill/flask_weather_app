@@ -14,7 +14,7 @@ def ingestion():
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-
+    app.instance_path = 'instance'
     from os import getcwd
     SWAGGER_URL = '/api/docs'
     API_URL = f'/static/swagger.json'

@@ -11,7 +11,7 @@ def index():
     return "hello World!", 200
 
 
-@api.route('/weather')
+@api.route('/weather', strict_slashes=False)
 def get_weather_data():
     station_code = request.args.get('station_code')
     date = request.args.get('date')
@@ -45,7 +45,7 @@ def get_weather_data():
     ), 200
 
 
-@api.route('/weather/stats')
+@api.route('/weather/stats', strict_slashes=False)
 def get_weather_stats():
     station_code = request.args.get('station_code')
     year = request.args.get('year')
