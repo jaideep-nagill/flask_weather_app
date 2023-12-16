@@ -6,7 +6,7 @@ from time import time
 from datetime import datetime
 
 
-from weather_app.models import Weather_Data, Weather_Stats
+from .models import Weather_Data, Weather_Stats
 
 
 def list_dir(path):
@@ -41,7 +41,7 @@ def construct_data_query(
     return query
 
 
-def construct_response(res, page_no, page_size, stats_or_data):
+def construct_response(res, stats_or_data):
     records = []
     keys_data = ['id', 'station_code', 'date', 'max_temp', 'min_temp', 'prcp']
     keys_stats = ['id', 'year', 'station_code''avg_max_temp',
@@ -102,7 +102,7 @@ def check_duplicate(file, db, last_date):
 
 
 def insert_data(path, db):
-
+    path = os.path.join(os.getcwd(), path)
     files = list_dir(path)
     if not files:
         return

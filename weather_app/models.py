@@ -37,6 +37,6 @@ class Weather_Stats(db.Model):
         self.total_acc_prcp = total_acc_prcp
         self.year = year
         self.station_code = station_code
-        self.avg_max_temp = self.avg_max_temp
-        self.avg_min_temp = self.avg_min_temp
-        self.total_acc_prcp = self.total_acc_prcp
+        self.avg_max_temp = avg_max_temp
+        self.avg_min_temp = avg_min_temp
+        self.total_acc_prcp = total_acc_prcp

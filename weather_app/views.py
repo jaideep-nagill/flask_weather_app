@@ -1,21 +1,14 @@
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from sqlalchemy.sql import text
 from .models import *
-from flask import Blueprint
+
 
 api = Blueprint('api', __name__, url_prefix='/api')
 
 
-def ingestion():
-    path = './data/wx_data'
-    from .utils import insert_data, calculate_stats
-    if insert_data(path, db):
-        calculate_stats(db)
-
-
 @api.route('/')
 def index():
-    return "hello World!"
+    return "hello World!", 200
 
 
 @api.route('/weather')
@@ -26,8 +19,7 @@ def get_weather_data():
     page_size = int(request.args.get('page_size', 10))
 
     query = "select * from weather__data"
-    from weather_app.utils import construct_data_query
-    from weather_app.utils import construct_data_query, construct_response
+    from .utils import construct_data_query, construct_response
     query = construct_data_query(
         query=query,
         station_code=station_code,
@@ -38,7 +30,7 @@ def get_weather_data():
     )
     res = db.session.execute(text(query))
 
-    records = construct_response(res, page_no, page_size, 'data')
+    records = construct_response(res, 'data')
     if len(records) == 0:
         return jsonify(
             {
@@ -62,7 +54,7 @@ def get_weather_stats():
     page_size = int(request.args.get('page_size', 10))
 
     query = "select * from weather__stats"
-    from weather_app.utils import construct_data_query, construct_response
+    from .utils import construct_data_query, construct_response
     query = construct_data_query(
         query=query,
         station_code=station_code,
@@ -72,7 +64,7 @@ def get_weather_stats():
         page_size=page_size
     )
     res = db.session.execute(text(query))
-    records = construct_response(res, page_no, page_size, 'stats')
+    records = construct_response(res, 'stats')
     if len(records) == 0:
         return jsonify(
             {

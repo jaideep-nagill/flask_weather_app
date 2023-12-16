@@ -1,12 +1,23 @@
-from flask import Flask, appcontext_pushed
+from flask import Flask
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
-def create_app():
-    app = Flask(__name__, instance_relative_config=True)
+def ingestion():
+    path = 'data/wx_data'
 
+    from .utils import insert_data, calculate_stats
+    from .models import db
+    if insert_data(path, db):
+        calculate_stats(db)
+
+
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
+
+    from os import getcwd
     SWAGGER_URL = '/api/docs'
-    API_URL = '/static/openapi.json'
+    API_URL = f'/static/swagger.json'
     swaggerui_blueprint = get_swaggerui_blueprint(
         SWAGGER_URL,
         API_URL,
@@ -14,11 +25,12 @@ def create_app():
             'app_name': "Test application"
         },
     )
+    app.register_blueprint(swaggerui_blueprint)
 
-    from .view import api
+    from .views import api
     app.register_blueprint(api)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-    from .view import db
+    from .views import db
     db.init_app(app)
+
     return app
